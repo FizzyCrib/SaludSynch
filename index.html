@@ -133,7 +133,7 @@
 <script>
 let contacto = localStorage.getItem("contactoEmergencia");
 
-// Guardar o llamar contacto
+// BOTÓN PRINCIPAL PARA LLAMAR O GUARDAR
 document.getElementById("btnContacto").onclick = () => {
     if (!contacto) {
         let nuevo = prompt("Ingresa número de emergencia:");
@@ -141,6 +141,7 @@ document.getElementById("btnContacto").onclick = () => {
             contacto = nuevo;
             localStorage.setItem("contactoEmergencia", nuevo);
             alert("Contacto guardado");
+            mostrarBotonEditar();
         }
     } else llamarContacto();
 };
@@ -150,10 +151,42 @@ function llamarContacto() {
     else window.location.href = "tel:" + contacto;
 }
 
+// MOSTRAR BOTÓN EDITAR SI YA HAY CONTACTO
+function mostrarBotonEditar() {
+    let existe = document.getElementById("editarContacto");
+    if (contacto && !existe) {
+        let btn = document.createElement("button");
+        btn.id = "editarContacto";
+        btn.textContent = "Editar contacto de emergencia";
+        btn.style.background = "#ffaa4a";
+        btn.style.marginTop = "10px";
+        btn.style.width = "92%";
+        btn.style.padding = "14px";
+        btn.style.borderRadius = "12px";
+        btn.style.color = "white";
+        btn.style.fontWeight = "bold";
+        btn.onclick = editarContacto;
+
+        document.body.appendChild(btn);
+    }
+}
+
+// FUNCIÓN PARA EDITAR
+function editarContacto() {
+    let nuevo = prompt("Nuevo número de contacto:", contacto);
+    if (nuevo && nuevo.trim() !== "") {
+        contacto = nuevo.trim();
+        localStorage.setItem("contactoEmergencia", contacto);
+        alert("Contacto actualizado");
+    }
+}
+
+mostrarBotonEditar();
+
 function abrirPopup(){ document.getElementById("popup").style.display = "flex"; }
 function cerrarPopup(){ document.getElementById("popup").style.display = "none"; }
 
-// ANALIZAR PRESION
+// ANALIZAR PRESIÓN
 document.getElementById("analizar").onclick = () => {
 
     let texto = document.getElementById("presion").value.trim();
@@ -184,6 +217,7 @@ document.getElementById("analizar").onclick = () => {
     }
 };
 </script>
+
 
 </body>
 </html>
