@@ -93,10 +93,7 @@
 
 <div class="card">
     <h3>Ingresa tu presión arterial</h3>
-
-    <!-- AQUI SOLO UN CAMPO 120/80 -->
     <input id="presion" type="text" placeholder="Ejemplo: 120/80">
-
     <button id="analizar">Analizar presión</button>
 </div>
 
@@ -166,7 +163,6 @@ function mostrarBotonEditar() {
         btn.style.color = "white";
         btn.style.fontWeight = "bold";
         btn.onclick = editarContacto;
-
         document.body.appendChild(btn);
     }
 }
@@ -188,7 +184,6 @@ function cerrarPopup(){ document.getElementById("popup").style.display = "none";
 
 // ANALIZAR PRESIÓN
 document.getElementById("analizar").onclick = () => {
-
     let texto = document.getElementById("presion").value.trim();
 
     if (!texto.includes("/")) {
@@ -200,24 +195,50 @@ document.getElementById("analizar").onclick = () => {
     let sis = parseInt(partes[0]);
     let dia = parseInt(partes[1]);
 
-    if (!sis || !dia) {
+    if (isNaN(sis) || isNaN(dia)) {
         alert("Ingresa números válidos.");
         return;
     }
 
-    // Simulación
-    document.getElementById("ritmo").textContent = "73 bpm";
-    document.getElementById("vari").textContent = "Normal";
-    document.getElementById("estres").textContent = "Moderado";
-    document.getElementById("emocion").textContent = "Tranquilo";
+    let ritmo, vari, estres, emocion;
 
-    // Detectar peligro
-    if (sis < 90 || dia < 60 || sis > 140 || dia > 90) {
+    // Presión hipotensión
+    if (sis < 90 || dia < 60) {
+        ritmo = `${60 + Math.floor(Math.random() * 5)} bpm`;
+        vari = "Baja";
+        estres = "Bajo";
+        emocion = "Débil";
         abrirPopup();
     }
+    // Presión normal
+    else if (sis >= 90 && sis <= 120 && dia >= 60 && dia <= 80) {
+        ritmo = `${70 + Math.floor(Math.random() * 5)} bpm`;
+        vari = "Normal";
+        estres = "Bajo";
+        emocion = "Tranquilo";
+    }
+    // Presión elevada
+    else if ((sis >= 121 && sis <= 139) || (dia >= 81 && dia <= 89)) {
+        ritmo = `${75 + Math.floor(Math.random() * 5)} bpm`;
+        vari = "Moderada";
+        estres = "Moderado";
+        emocion = "Preocupado";
+    }
+    // Hipertensión
+    else if (sis >= 140 || dia >= 90) {
+        ritmo = `${85 + Math.floor(Math.random() * 5)} bpm`;
+        vari = "Baja";
+        estres = "Alto";
+        emocion = "Tenso";
+        abrirPopup();
+    }
+
+    document.getElementById("ritmo").textContent = ritmo;
+    document.getElementById("vari").textContent = vari;
+    document.getElementById("estres").textContent = estres;
+    document.getElementById("emocion").textContent = emocion;
 };
 </script>
-
 
 </body>
 </html>
