@@ -1,244 +1,372 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SaludSynch</title>
-
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-    body {
-        font-family: "Segoe UI", sans-serif;
-        background: linear-gradient(#dff3ff, #bfe3ff);
-        margin: 0;
-        padding: 15px;
-        text-align: center;
-    }
-
-    h2 {
-        color: #1678c2;
-        font-size: 28px;
-        margin-bottom: 15px;
-    }
-
-    .card {
-        background: white;
-        padding: 20px;
-        border-radius: 18px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        margin-bottom: 20px;
-    }
-
-    input {
-        width: 92%;
-        padding: 14px;
-        font-size: 18px;
-        text-align: center;
-        border-radius: 10px;
-        border: 2px solid #87c9ff;
-        outline: none;
-        margin-top: 10px;
-    }
-
-    input:focus {
-        border-color: #4aa6ff;
-    }
-
-    button {
-        background: #4aa6ff;
-        padding: 14px;
-        border: none;
-        color: white;
-        font-weight: bold;
-        border-radius: 12px;
-        font-size: 16px;
-        width: 92%;
-        margin-top: 12px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-
-    button:active {
-        background: #2d8fe6;
-    }
-
-    /* POPUP */
-    #popup {
-        display: none;
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0,0,0,0.5);
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-    }
-
-    #popupBox {
-        background: white;
-        padding: 25px;
-        border-radius: 20px;
-        max-width: 95%;
-        width: 340px;
-    }
-
-    .danger {
-        color: red;
-        font-size: 20px;
-        margin-bottom: 10px;
-    }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0b1f3a;--teal:#0db8a4;--teal-light:#1dd9c3;
+  --red:#e8455a;--gold:#f0b429;--purple:#7c6ee6;--purple-soft:#a99cf0;
+  --white:#f4f8fb;--muted:rgba(244,248,251,0.5);
+  --card-bg:rgba(255,255,255,0.055);--card-border:rgba(255,255,255,0.1);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(13,184,164,.18) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 85% 85%,rgba(124,110,230,.12) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 60% 30%,rgba(240,180,41,.05) 0%,transparent 55%);pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+.app{position:relative;z-index:1;max-width:440px;margin:0 auto;padding:28px 20px 90px}
+header{text-align:center;margin-bottom:36px;animation:fadeDown .7s ease both}
+.logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px}
+.logo-icon{width:38px;height:38px;background:var(--teal);border-radius:11px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(13,184,164,.5);flex-shrink:0}
+.logo-icon svg{width:20px;height:20px;fill:var(--navy)}
+h1{font-family:'DM Serif Display',serif;font-size:30px;letter-spacing:-.5px}
+h1 span{color:var(--teal)}
+.tagline{font-size:12px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+.sdiv{display:flex;align-items:center;gap:12px;margin:20px 0 14px;animation:fadeUp .5s ease both}
+.sdiv-line{flex:1;height:1px;background:rgba(255,255,255,.08)}
+.sdiv-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.card{background:var(--card-bg);border:1px solid var(--card-border);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:22px;padding:22px;margin-bottom:14px;animation:fadeUp .6s ease both}
+.card-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:14px}
+.bp-input{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:16px 20px;font-size:28px;font-family:'DM Serif Display',serif;color:var(--white);text-align:center;outline:none;letter-spacing:2px;transition:border-color .3s,background .3s,box-shadow .3s}
+.bp-input::placeholder{color:rgba(255,255,255,.2);font-size:20px;letter-spacing:1px}
+.bp-input:focus{border-color:var(--teal);background:rgba(13,184,164,.08);box-shadow:0 0 0 4px rgba(13,184,164,.12)}
+.input-hint{text-align:center;font-size:12px;color:var(--muted);margin-top:8px}
+.btn{width:100%;padding:15px 20px;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;cursor:pointer;transition:all .25s ease;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary{background:var(--teal);color:var(--navy);box-shadow:0 4px 20px rgba(13,184,164,.35)}
+.btn-primary:hover{background:var(--teal-light);transform:translateY(-1px)}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--white)}
+.btn-ghost:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.3)}
+.btn-danger{background:linear-gradient(135deg,#e8455a,#c4293e);color:white;box-shadow:0 4px 20px rgba(232,69,90,.4)}
+.btn-danger:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(232,69,90,.5)}
+.btn-warning{background:linear-gradient(135deg,var(--gold),#e09d18);color:var(--navy);box-shadow:0 4px 16px rgba(240,180,41,.3)}
+.btn-warning:hover{transform:translateY(-1px)}
+.btn-ai{background:linear-gradient(135deg,#6c5ce7,#4834d4);color:white;box-shadow:0 4px 20px rgba(108,92,231,.4)}
+.btn-ai:hover{transform:translateY(-1px)}
+.btn-purple{background:linear-gradient(135deg,#7c6ee6,#5b4ed4);color:white;box-shadow:0 4px 20px rgba(124,110,230,.4)}
+.btn-purple:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(124,110,230,.5)}
+.btn-row{display:flex;gap:10px;margin-bottom:10px}
+.btn-row .btn{flex:1}
+.indicators{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.indicator{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;transition:border-color .4s,background .4s}
+.indicator.active{border-color:rgba(13,184,164,.4);background:rgba(13,184,164,.08)}
+.ind-label{font-size:11px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.ind-value{font-family:'DM Serif Display',serif;font-size:20px;color:var(--teal);transition:color .4s;min-height:28px}
+.ind-value.neutral{color:rgba(255,255,255,.35)}
+.ind-value.danger{color:var(--red)}
+.ind-value.warning{color:var(--gold)}
+.status-bar{display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);margin-top:12px;min-height:52px;transition:all .4s}
+.status-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.2);flex-shrink:0;transition:background .4s,box-shadow .4s}
+.status-dot.ok{background:var(--teal);box-shadow:0 0 10px var(--teal)}
+.status-dot.warning{background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.status-dot.danger{background:var(--red);box-shadow:0 0 10px var(--red);animation:pulse 1.2s infinite}
+.status-text{font-size:14px;color:var(--muted);line-height:1.4}
+.ecg-container{height:44px;margin:12px 0 4px;overflow:hidden;position:relative;opacity:.7}
+.ecg-line{position:absolute;bottom:0;left:0;width:200%;height:100%;animation:ecgScroll 3s linear infinite}
+.contact-chip{display:none;align-items:center;gap:10px;background:rgba(240,180,41,.1);border:1px solid rgba(240,180,41,.25);border-radius:12px;padding:12px 16px;margin-bottom:10px}
+.contact-chip.visible{display:flex}
+.contact-chip-info{flex:1}
+.contact-chip-label{font-size:11px;color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.contact-chip-number{font-size:15px;color:var(--white);font-weight:500;margin-top:2px}
+.chip-actions{display:flex;gap:6px}
+.chip-btn{background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--white);border-radius:8px;padding:6px 10px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s}
+.chip-btn:hover{background:rgba(255,255,255,.1)}
+.chip-btn.call{background:var(--teal);border-color:var(--teal);color:var(--navy);font-weight:600}
+.test-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.test-head-icon{width:40px;height:40px;border-radius:12px;background:rgba(124,110,230,.2);border:1px solid rgba(124,110,230,.3);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.test-head-title{font-family:'DM Serif Display',serif;font-size:17px;color:var(--white);margin-bottom:2px}
+.test-head-sub{font-size:12px;color:var(--muted)}
+.prog-wrap{background:rgba(255,255,255,.07);border-radius:8px;height:5px;margin-bottom:18px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--purple-soft));border-radius:8px;transition:width .4s ease;width:0%}
+.q-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:18px;margin-bottom:10px;animation:fadeUp .4s ease both}
+.q-num{font-size:10px;color:var(--purple-soft);font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.q-text{font-size:14px;color:var(--white);font-weight:500;margin-bottom:12px;line-height:1.45}
+.q-options{display:flex;flex-direction:column;gap:7px}
+.q-option{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:all .2s}
+.q-option:hover{background:rgba(124,110,230,.12);border-color:rgba(124,110,230,.3)}
+.q-option.selected{background:rgba(124,110,230,.2);border-color:rgba(124,110,230,.5)}
+.q-dot{width:15px;height:15px;border-radius:50%;border:2px solid rgba(255,255,255,.3);flex-shrink:0;transition:all .2s}
+.q-option.selected .q-dot{background:var(--purple-soft);border-color:var(--purple-soft);box-shadow:0 0 8px rgba(169,156,240,.5)}
+.q-option-label{font-size:13px;color:var(--white);line-height:1.3}
+.res-header{text-align:center;margin-bottom:18px}
+.res-emoji{font-size:44px;margin-bottom:10px}
+.res-tag{display:inline-block;background:rgba(124,110,230,.2);border:1px solid rgba(124,110,230,.4);color:var(--purple-soft);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:4px 13px;border-radius:20px;margin-bottom:8px}
+.res-title{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:8px}
+.res-desc{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:18px}
+.chart-wrap{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;margin-bottom:16px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(5,15,30,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:200;align-items:center;justify-content:center;padding:20px}
+.overlay.show{display:flex;animation:fadeIn .3s ease}
+#popupBox{background:#0f2140;border:1px solid rgba(232,69,90,.4);border-radius:24px;padding:28px 22px;width:100%;max-width:360px;box-shadow:0 0 60px rgba(232,69,90,.2);animation:popIn .35s cubic-bezier(.34,1.56,.64,1) both}
+.popup-icon{width:56px;height:56px;border-radius:50%;background:rgba(232,69,90,.15);border:2px solid rgba(232,69,90,.4);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px}
+.popup-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--red);text-align:center;margin-bottom:8px}
+.popup-msg{text-align:center;color:var(--muted);font-size:14px;margin-bottom:20px;line-height:1.5}
+.popup-msg strong{color:var(--white)}
+.popup-actions{display:flex;flex-direction:column;gap:10px}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes ecgScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
 </style>
-
 </head>
 <body>
+<div class="app">
 
-<h2>SaludSynch</h2>
-
-<div class="card">
-    <h3>Ingresa tu presión arterial</h3>
-    <input id="presion" type="text" placeholder="Ejemplo: 120/80">
-    <button id="analizar">Analizar presión</button>
-</div>
-
-<div class="card">
-    <h3>Indicadores de salud</h3>
-    <p><b>Ritmo cardíaco:</b> <span id="ritmo">—</span></p>
-    <p><b>Variabilidad:</b> <span id="vari">—</span></p>
-    <p><b>Nivel de estrés:</b> <span id="estres">—</span></p>
-    <p><b>Estado emocional:</b> <span id="emocion">—</span></p>
-</div>
-
-<button onclick="window.location.href='https://chat.openai.com/?q=Ocupo%20ayuda%20con%20mi%20ansiedad'">
-    Hablar con IA por ansiedad
-</button>
-
-<button onclick="window.location.href='tel:911'">
-    Llamar 911
-</button>
-
-<button id="btnContacto">Llamar contacto de emergencia</button>
-
-<!-- POPUP DE EMERGENCIA -->
-<div id="popup">
-    <div id="popupBox">
-        <h3 class="danger">⚠ Presión peligrosa</h3>
-        <p>¿Deseas pedir ayuda?</p>
-
-        <button onclick="window.location.href='tel:911'">Llamar 911</button>
-        <button onclick="llamarContacto()">Llamar contacto</button>
-        <button onclick="cerrarPopup()" style="background:#ccc; color:black;">Cancelar</button>
+<header>
+  <div class="logo-row">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/></svg>
     </div>
+    <h1>Salud<span>Synch</span></h1>
+  </div>
+  <p class="tagline">Monitor de salud personal</p>
+</header>
+
+<div class="sdiv" style="animation-delay:.05s"><div class="sdiv-line"></div><div class="sdiv-label">Signos vitales</div><div class="sdiv-line"></div></div>
+
+<div class="card" style="animation-delay:.1s">
+  <div class="card-label">Presion arterial</div>
+  <input class="bp-input" id="presion" type="text" placeholder="120/80" maxlength="8" autocomplete="off">
+  <p class="input-hint">Sistolica / Diastolica - mmHg</p><br>
+  <button class="btn btn-primary" id="analizar">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    Analizar presion
+  </button>
+</div>
+
+<div class="card" style="animation-delay:.15s">
+  <div class="card-label">Indicadores de salud</div>
+  <div class="ecg-container" id="ecgContainer" style="display:none">
+    <svg class="ecg-line" viewBox="0 0 800 44" preserveAspectRatio="none">
+      <polyline points="0,22 60,22 80,22 90,8 100,36 110,4 120,40 130,22 200,22 260,22 280,22 290,8 300,36 310,4 320,40 330,22 400,22 460,22 480,22 490,8 500,36 510,4 520,40 530,22 600,22 660,22 680,22 690,8 700,36 710,4 720,40 730,22 800,22" fill="none" stroke="#0db8a4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="indicators">
+    <div class="indicator" id="ind-ritmo"><div class="ind-label">Ritmo cardiaco</div><div class="ind-value neutral" id="ritmo">-</div></div>
+    <div class="indicator" id="ind-vari"><div class="ind-label">Variabilidad</div><div class="ind-value neutral" id="vari">-</div></div>
+    <div class="indicator" id="ind-estres"><div class="ind-label">Nivel de estres</div><div class="ind-value neutral" id="estres">-</div></div>
+    <div class="indicator" id="ind-emocion"><div class="ind-label">Estado emocional</div><div class="ind-value neutral" id="emocion">-</div></div>
+  </div>
+  <div class="status-bar">
+    <div class="status-dot" id="statusDot"></div>
+    <span class="status-text" id="statusText">Ingresa tu presion arterial para ver el analisis</span>
+  </div>
+</div>
+
+<div class="sdiv" style="animation-delay:.2s;margin-top:8px"><div class="sdiv-line"></div><div class="sdiv-label">Balance emocional</div><div class="sdiv-line"></div></div>
+
+<div class="card" style="animation-delay:.25s">
+  <div class="test-head">
+    <div class="test-head-icon">&#x1F9E0;</div>
+    <div>
+      <div class="test-head-title">Evaluacion Clinica</div>
+      <div class="test-head-sub">10 preguntas - 2 minutos - Completamente privado</div>
+    </div>
+  </div>
+  <div class="prog-wrap" id="progWrap" style="display:none"><div class="prog-fill" id="progFill"></div></div>
+
+  <div id="testStart">
+    <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px">Responde con honestidad como te has sentido recientemente. El resultado te dara una orientacion sobre tu bienestar emocional actual. No reemplaza atencion medica profesional.</p>
+    <button class="btn btn-purple" onclick="iniciarTest()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Iniciar evaluacion
+    </button>
+  </div>
+
+  <div id="testQ" style="display:none">
+    <div id="qContainer"></div>
+    <button class="btn btn-purple" id="btnGenerar" style="display:none;margin-top:4px" onclick="procesarTest()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+      Generar informe
+    </button>
+    <button class="btn btn-ghost" style="margin-top:10px" onclick="cancelarTest()">Cancelar</button>
+  </div>
+
+  <div id="testResult" style="display:none">
+    <div class="res-header">
+      <div class="res-emoji" id="resEmoji"></div>
+      <div class="res-tag" id="resTag"></div>
+      <div class="res-title" id="resTitle"></div>
+      <p class="res-desc" id="resDesc"></p>
+    </div>
+    <div class="chart-wrap"><canvas id="grafica" height="220"></canvas></div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button class="btn btn-ai" onclick="window.location.href='https://chat.openai.com/?q=Ocupo+ayuda+emocional+con+mi+salud+mental'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Hablar con IA sobre mi resultado
+      </button>
+      <button class="btn btn-ghost" onclick="reiniciarTest()">Repetir evaluacion</button>
+    </div>
+  </div>
+</div>
+
+<div class="sdiv" style="animation-delay:.3s;margin-top:8px"><div class="sdiv-line"></div><div class="sdiv-label">Acciones rapidas</div><div class="sdiv-line"></div></div>
+
+<div class="card" style="animation-delay:.35s">
+  <div class="card-label">Emergencias y apoyo</div>
+  <div class="contact-chip" id="contactChip">
+    <div class="contact-chip-info">
+      <div class="contact-chip-label">Contacto de emergencia</div>
+      <div class="contact-chip-number" id="contactNumber">-</div>
+    </div>
+    <div class="chip-actions">
+      <button class="chip-btn" onclick="editarContacto()">Editar</button>
+      <button class="chip-btn call" onclick="llamarContacto()">Llamar</button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-danger" onclick="window.location.href='tel:911'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.79 19.79 0 01.12 2.18 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      Llamar 911
+    </button>
+    <button class="btn btn-ghost" id="btnContacto">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span id="btnContactoLabel">Agregar contacto</span>
+    </button>
+  </div>
+  <button class="btn btn-ai" onclick="window.location.href='https://chat.openai.com/?q=Ocupo+ayuda+con+mi+ansiedad'">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    Hablar con IA sobre ansiedad
+  </button>
+</div>
+
+</div>
+
+<div class="overlay" id="popup">
+  <div id="popupBox">
+    <div class="popup-icon">&#x1F6A8;</div>
+    <div class="popup-title" id="popupTitle">Presion peligrosa</div>
+    <p class="popup-msg" id="popupMsg">Se detecto una lectura fuera del rango seguro.</p>
+    <div class="popup-actions">
+      <button class="btn btn-danger" onclick="window.location.href='tel:911'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.79 19.79 0 01.12 2.18 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        Llamar 911 ahora
+      </button>
+      <button class="btn btn-warning" onclick="llamarContacto();cerrarPopup()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Llamar contacto de emergencia
+      </button>
+      <button class="btn btn-ghost" onclick="cerrarPopup()">Cancelar</button>
+    </div>
+  </div>
 </div>
 
 <script>
-let contacto = localStorage.getItem("contactoEmergencia");
-
-// BOTÓN PRINCIPAL PARA LLAMAR O GUARDAR
-document.getElementById("btnContacto").onclick = () => {
-    if (!contacto) {
-        let nuevo = prompt("Ingresa número de emergencia:");
-        if (nuevo) {
-            contacto = nuevo;
-            localStorage.setItem("contactoEmergencia", nuevo);
-            alert("Contacto guardado");
-            mostrarBotonEditar();
-        }
-    } else llamarContacto();
+var preguntas=[
+  {text:"Como describirias tu claridad mental hoy?",opts:[{l:"Nublada y acelerada",v:"ansiedad"},{l:"Lenta y pesada",v:"depresion"},{l:"Dispersa, me cuesta enfocarme",v:"tdah"},{l:"Clara y despejada",v:"normal"}]},
+  {text:"Que tan facil te es mantener habitos o rutinas?",opts:[{l:"Muy complicado, todo se me olvida",v:"tdah"},{l:"A veces dificil por el estres",v:"estres"},{l:"Bastante facil y constante",v:"normal"}]},
+  {text:"Tus emociones cambian con rapidez?",opts:[{l:"Si, cambios drasticos frecuentes",v:"bipolaridad"},{l:"Si, muy intensas y dificiles de manejar",v:"tlp"},{l:"No tanto, soy bastante estable",v:"normal"}]},
+  {text:"Que tan presente esta la preocupacion en tu dia?",opts:[{l:"Demasiado, casi siempre estoy preocupado/a",v:"ansiedad"},{l:"Se vuelve repetitiva y no puedo detenerla",v:"toc"},{l:"Poco, la manejo bien",v:"normal"}]},
+  {text:"Evitas ciertas actividades por sensaciones incomodas?",opts:[{l:"Si, por miedo intenso a algo especifico",v:"fobia"},{l:"Si, por recuerdos o situaciones del pasado",v:"tept"},{l:"No, generalmente me siento libre",v:"normal"}]},
+  {text:"Como calificas tu conexion emocional con otros?",opts:[{l:"Muy inestable, cambia drasticamente",v:"tlp"},{l:"Me cuesta conectar, me siento distante",v:"depresion"},{l:"Estable y satisfactoria",v:"normal"}]},
+  {text:"Como manejas el estres en situaciones inesperadas?",opts:[{l:"Me afecta mucho y tardo en recuperarme",v:"estres"},{l:"Me pongo tenso/a y ansioso/a",v:"ansiedad"},{l:"Lo manejo con relativa calma",v:"normal"}]},
+  {text:"Notas pensamientos repetitivos dificiles de detener?",opts:[{l:"Si, bastante y me generan angustia",v:"toc"},{l:"Algunos, sobre todo cuando me preocupo",v:"ansiedad"},{l:"No mucho, puedo redirigir mi mente",v:"normal"}]},
+  {text:"Como describirias tu regulacion emocional?",opts:[{l:"Cambios drasticos de animo",v:"bipolaridad"},{l:"Muy complicada, las emociones me superan",v:"tlp"},{l:"Solida, me conozco bien",v:"normal"}]},
+  {text:"Cuanta tension fisica o mental sientes diariamente?",opts:[{l:"Alta, casi siempre agotado/a",v:"estres"},{l:"Moderada, con picos frecuentes",v:"ansiedad"},{l:"Baja, me siento en calma generalmente",v:"normal"}]}
+];
+var textos={
+  ansiedad:{e:"😰",t:"Indicios de ansiedad",d:"Podrias estar experimentando niveles elevados de tension y preocupacion. Es normal ante situaciones de estres, pero vale la pena monitorear y buscar apoyo si se mantiene en el tiempo."},
+  depresion:{e:"🌫️",t:"Posible baja emocional",d:"Notas senales de baja energia o desconexion emocional. Considera hablar con alguien de confianza o un profesional para recibir orientacion y apoyo."},
+  tdah:{e:"⚡",t:"Dificultad de concentracion",d:"La dispersion y falta de constancia pueden senalar dificultades atencionales. Un especialista puede ayudarte con estrategias personalizadas."},
+  estres:{e:"🔥",t:"Estres elevado",d:"Tu cuerpo y mente estan respondiendo a presion constante. Priorizar el descanso, el movimiento y tecnicas de relajacion puede ayudar significativamente."},
+  toc:{e:"🔁",t:"Pensamiento repetitivo",d:"Los pensamientos intrusivos pueden ser agotadores. Tecnicas cognitivo-conductuales y apoyo profesional son especialmente efectivos en estos casos."},
+  tept:{e:"🌊",t:"Impacto de experiencias pasadas",d:"Algunas memorias podrian seguir afectando tu bienestar actual. La terapia especializada puede ser de gran ayuda para procesar y sanar."},
+  fobia:{e:"😨",t:"Presencia de miedos especificos",d:"Ciertos miedos intensos podrian estar limitando tu vida cotidiana. La exposicion gradual con apoyo profesional tiene alta efectividad."},
+  bipolaridad:{e:"🎭",t:"Variabilidad emocional elevada",d:"Los cambios intensos de estado animico merecen atencion profesional para un manejo apropiado y sostenido."},
+  tlp:{e:"🌊",t:"Regulacion emocional compleja",d:"Las emociones intensas y la inestabilidad merecen atencion especializada. No estas solo/a en esto."},
+  normal:{e:"🌿",t:"Balance emocional estable",d:"Tu estado general se percibe equilibrado. Mantener habitos saludables y espacios de introspeccion te ayudara a sostener este bienestar."}
 };
 
-function llamarContacto() {
-    if (!contacto) alert("No hay contacto guardado");
-    else window.location.href = "tel:" + contacto;
+var contacto=localStorage.getItem("contactoEmergencia")||null;
+var respuestas={};
+var chart=null;
+
+function actualizarContacto(){
+  var chip=document.getElementById("contactChip");
+  if(contacto){chip.classList.add("visible");document.getElementById("contactNumber").textContent=contacto;document.getElementById("btnContactoLabel").textContent="Ver contacto";}
+  else{chip.classList.remove("visible");document.getElementById("btnContactoLabel").textContent="Agregar contacto";}
 }
-
-// MOSTRAR BOTÓN EDITAR SI YA HAY CONTACTO
-function mostrarBotonEditar() {
-    let existe = document.getElementById("editarContacto");
-    if (contacto && !existe) {
-        let btn = document.createElement("button");
-        btn.id = "editarContacto";
-        btn.textContent = "Editar contacto de emergencia";
-        btn.style.background = "#ffaa4a";
-        btn.style.marginTop = "10px";
-        btn.style.width = "92%";
-        btn.style.padding = "14px";
-        btn.style.borderRadius = "12px";
-        btn.style.color = "white";
-        btn.style.fontWeight = "bold";
-        btn.onclick = editarContacto;
-        document.body.appendChild(btn);
-    }
-}
-
-// FUNCIÓN PARA EDITAR
-function editarContacto() {
-    let nuevo = prompt("Nuevo número de contacto:", contacto);
-    if (nuevo && nuevo.trim() !== "") {
-        contacto = nuevo.trim();
-        localStorage.setItem("contactoEmergencia", contacto);
-        alert("Contacto actualizado");
-    }
-}
-
-mostrarBotonEditar();
-
-function abrirPopup(){ document.getElementById("popup").style.display = "flex"; }
-function cerrarPopup(){ document.getElementById("popup").style.display = "none"; }
-
-// ANALIZAR PRESIÓN
-document.getElementById("analizar").onclick = () => {
-    let texto = document.getElementById("presion").value.trim();
-
-    if (!texto.includes("/")) {
-        alert("Escribe la presión en formato 120/80");
-        return;
-    }
-
-    let partes = texto.split("/");
-    let sis = parseInt(partes[0]);
-    let dia = parseInt(partes[1]);
-
-    if (isNaN(sis) || isNaN(dia)) {
-        alert("Ingresa números válidos.");
-        return;
-    }
-
-    let ritmo, vari, estres, emocion;
-
-    // Presión hipotensión
-    if (sis < 90 || dia < 60) {
-        ritmo = `${60 + Math.floor(Math.random() * 5)} bpm`;
-        vari = "Baja";
-        estres = "Bajo";
-        emocion = "Débil";
-        abrirPopup();
-    }
-    // Presión normal
-    else if (sis >= 90 && sis <= 120 && dia >= 60 && dia <= 80) {
-        ritmo = `${70 + Math.floor(Math.random() * 5)} bpm`;
-        vari = "Normal";
-        estres = "Bajo";
-        emocion = "Tranquilo";
-    }
-    // Presión elevada
-    else if ((sis >= 121 && sis <= 139) || (dia >= 81 && dia <= 89)) {
-        ritmo = `${75 + Math.floor(Math.random() * 5)} bpm`;
-        vari = "Moderada";
-        estres = "Moderado";
-        emocion = "Preocupado";
-    }
-    // Hipertensión
-    else if (sis >= 140 || dia >= 90) {
-        ritmo = `${85 + Math.floor(Math.random() * 5)} bpm`;
-        vari = "Baja";
-        estres = "Alto";
-        emocion = "Tenso";
-        abrirPopup();
-    }
-
-    document.getElementById("ritmo").textContent = ritmo;
-    document.getElementById("vari").textContent = vari;
-    document.getElementById("estres").textContent = estres;
-    document.getElementById("emocion").textContent = emocion;
+document.getElementById("btnContacto").onclick=function(){
+  if(!contacto){var n=prompt("Ingresa el numero de tu contacto de emergencia:");if(n&&n.trim()){contacto=n.trim();localStorage.setItem("contactoEmergencia",contacto);actualizarContacto();}}
+  else llamarContacto();
 };
+function llamarContacto(){if(!contacto)alert("No hay contacto guardado.");else window.location.href="tel:"+contacto;}
+function editarContacto(){var n=prompt("Nuevo numero:",contacto);if(n&&n.trim()){contacto=n.trim();localStorage.setItem("contactoEmergencia",contacto);actualizarContacto();}}
+actualizarContacto();
+
+function abrirPopup(t,m){document.getElementById("popupTitle").textContent=t;document.getElementById("popupMsg").innerHTML=m;document.getElementById("popup").classList.add("show");}
+function cerrarPopup(){document.getElementById("popup").classList.remove("show");}
+document.getElementById("popup").addEventListener("click",function(e){if(e.target===document.getElementById("popup"))cerrarPopup();});
+
+document.getElementById("analizar").onclick=function(){
+  var txt=document.getElementById("presion").value.trim();
+  if(!txt.includes("/")){sacudir();return;}
+  var p=txt.split("/"),sis=parseInt(p[0]),dia=parseInt(p[1]);
+  if(isNaN(sis)||isNaN(dia)){sacudir();return;}
+  var ritmo,vari,estres,emocion,sc,sm,peligroso=false,pt="",pm="";
+  if(sis<90||dia<60){ritmo=(60+Math.floor(Math.random()*5))+" bpm";vari="Baja";estres="Bajo";emocion="Debil";sc="danger";sm="<strong>Hipotension detectada.</strong> Presion muy baja, considera consultar a un medico.";peligroso=true;pt="Presion muy baja";pm="Lectura: <strong>"+sis+"/"+dia+" mmHg</strong>. Puede causar mareos o desmayos.";}
+  else if(sis>=90&&sis<=120&&dia>=60&&dia<=80){ritmo=(70+Math.floor(Math.random()*5))+" bpm";vari="Normal";estres="Bajo";emocion="Tranquilo";sc="ok";sm="<strong>Presion normal.</strong> Tu lectura esta en el rango saludable.";}
+  else if((sis>=121&&sis<=139)||(dia>=81&&dia<=89)){ritmo=(75+Math.floor(Math.random()*5))+" bpm";vari="Moderada";estres="Moderado";emocion="Preocupado";sc="warning";sm="<strong>Presion elevada.</strong> Ligeramente por encima del ideal. Monitorea con frecuencia.";}
+  else{ritmo=(85+Math.floor(Math.random()*5))+" bpm";vari="Baja";estres="Alto";emocion="Tenso";sc="danger";sm="<strong>Hipertension detectada.</strong> Presion peligrosamente alta, busca atencion medica.";peligroso=true;pt="Hipertension critica";pm="Lectura: <strong>"+sis+"/"+dia+" mmHg</strong>. Presion peligrosa. Que deseas hacer?";}
+  setInd("ritmo",ritmo,sc);setInd("vari",vari,sc);setInd("estres",estres,sc);setInd("emocion",emocion,sc);
+  document.getElementById("statusDot").className="status-dot "+sc;
+  document.getElementById("statusText").innerHTML=sm;
+  document.getElementById("ecgContainer").style.display="block";
+  ["ind-ritmo","ind-vari","ind-estres","ind-emocion"].forEach(function(id){document.getElementById(id).classList.add("active");});
+  if(peligroso)setTimeout(function(){abrirPopup(pt,pm);},600);
+};
+function setInd(id,val,type){var el=document.getElementById(id);el.className="ind-value";if(type==="danger")el.classList.add("danger");else if(type==="warning")el.classList.add("warning");el.textContent=val;}
+function sacudir(){var inp=document.getElementById("presion");inp.style.borderColor="#e8455a";inp.style.animation="none";void inp.offsetWidth;inp.style.animation="shake .4s ease";setTimeout(function(){inp.style.borderColor="";inp.style.animation="";},600);}
+document.getElementById("presion").addEventListener("input",function(){var v=this.value.replace(/[^0-9\/]/g,'');if(v.length===3&&v.indexOf('/')===-1)v=v+'/';this.value=v;});
+document.getElementById("presion").addEventListener("keydown",function(e){if(e.key==="Enter")document.getElementById("analizar").click();});
+
+function iniciarTest(){
+  respuestas={};
+  document.getElementById("testStart").style.display="none";
+  document.getElementById("testResult").style.display="none";
+  document.getElementById("progWrap").style.display="block";
+  document.getElementById("progFill").style.width="0%";
+  document.getElementById("btnGenerar").style.display="none";
+  document.getElementById("testQ").style.display="block";
+  var c=document.getElementById("qContainer");c.innerHTML="";
+  preguntas.forEach(function(p,i){
+    var div=document.createElement("div");div.className="q-card";div.style.animationDelay=(i*.04)+"s";
+    var opts=p.opts.map(function(o,j){return '<div class="q-option" id="opt-'+i+'-'+j+'" onclick="sel('+i+','+j+',\''+o.v+'\')"><div class="q-dot"></div><span class="q-option-label">'+o.l+'</span></div>';}).join('');
+    div.innerHTML='<div class="q-num">Pregunta '+(i+1)+' de '+preguntas.length+'</div><div class="q-text">'+p.text+'</div><div class="q-options" id="opts-'+i+'">'+opts+'</div>';
+    c.appendChild(div);
+  });
+}
+function cancelarTest(){document.getElementById("testQ").style.display="none";document.getElementById("progWrap").style.display="none";document.getElementById("testStart").style.display="block";}
+function reiniciarTest(){document.getElementById("testResult").style.display="none";iniciarTest();}
+function sel(pi,oi,val){
+  document.querySelectorAll("#opts-"+pi+" .q-option").forEach(function(o){o.classList.remove("selected");});
+  document.getElementById("opt-"+pi+"-"+oi).classList.add("selected");
+  respuestas[pi]=val;
+  var n=Object.keys(respuestas).length;
+  document.getElementById("progFill").style.width=(n/preguntas.length*100)+"%";
+  if(n===preguntas.length){var btn=document.getElementById("btnGenerar");btn.style.display="flex";setTimeout(function(){btn.scrollIntoView({behavior:"smooth",block:"nearest"});},150);}
+}
+function procesarTest(){
+  var count={};Object.values(respuestas).forEach(function(v){count[v]=(count[v]||0)+1;});
+  var max=null;for(var k in count)if(!max||count[k]>count[max])max=k;
+  var info=textos[max]||textos.normal;
+  document.getElementById("resEmoji").textContent=info.e;
+  document.getElementById("resTag").textContent=max.toUpperCase();
+  document.getElementById("resTitle").textContent=info.t;
+  document.getElementById("resDesc").textContent=info.d;
+  if(chart){chart.destroy();chart=null;}
+  var labels=Object.keys(count).map(function(k){return textos[k]?textos[k].t:k;});
+  chart=new Chart(document.getElementById("grafica"),{type:"radar",data:{labels:labels,datasets:[{data:Object.values(count),borderColor:"#a99cf0",backgroundColor:"rgba(124,110,230,0.15)",borderWidth:2,pointBackgroundColor:"#a99cf0",pointRadius:4}]},options:{scales:{r:{beginAtZero:true,ticks:{color:"rgba(244,248,251,0.4)",stepSize:1,font:{size:10}},grid:{color:"rgba(255,255,255,0.08)"},angleLines:{color:"rgba(255,255,255,0.06)"},pointLabels:{color:"rgba(244,248,251,0.6)",font:{size:10}}}},plugins:{legend:{display:false}}}});
+  document.getElementById("testQ").style.display="none";
+  document.getElementById("progWrap").style.display="none";
+  document.getElementById("testResult").style.display="block";
+  setTimeout(function(){document.getElementById("testResult").scrollIntoView({behavior:"smooth",block:"start"});},100);
+}
 </script>
-
 </body>
 </html>
